@@ -9,7 +9,7 @@
         </div>
 
         <div class="center-menu">
-          <router-link tag="a" to="/" class="button-link">
+          <router-link tag="a" to="/" class="center-button-link">
             <div class="center-logo">SKELO</div>
           </router-link>
         </div>
@@ -96,13 +96,6 @@ export default {
   padding: 0 1rem;
 }
 
-/* .left-menu .left-menu-btn {
-  font-size: 15px;
-  font-family: "Noto Serif KR", serif;
-  cursor: pointer;
-  line-height: 60px;
-} */
-
 .left-menu .left-menu-btn .left-menu-btn-icon {
   display: inline-block;
   opacity: 1;
@@ -125,7 +118,6 @@ export default {
   bottom: 0;
   margin: 0 auto;
   padding: 0 1rem;
-  cursor: pointer;
   display: flex;
   -webkit-box-pack: center;
   justify-content: center;
@@ -133,7 +125,7 @@ export default {
   align-items: center;
 }
 
-.center-menu .center-logo {
+.center-menu .center-button-link .center-logo {
   color: $black;
   /* font-family: "Noto Serif KR", serif; */
   font-family: "Krona One", serif;
@@ -153,7 +145,6 @@ export default {
 }
 
 .right-menu {
-  cursor: pointer;
   display: inline-block;
   min-height: 1em;
   border: none;
