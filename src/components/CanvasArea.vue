@@ -6,17 +6,26 @@
 
 <script>
 import { fabric } from "fabric";
+
 export default {
   mounted() {
     const ref = this.$refs.cvs;
-    const canvas = new fabric.Canvas(ref);
+    const canvas = new fabric.Canvas(ref, { isDrawingMode: true });
+
+    canvas.setHeight(500);
+    canvas.setWidth(500);
+    canvas.on("mouse:up", function() {
+      canvas.isDrawingMode = false;
+    });
+
     const rect = new fabric.Rect({
       fill: "red",
       width: 20,
       height: 20
     });
     canvas.add(rect);
-  }
+  },
+  methods: {}
 };
 </script>
 
@@ -28,8 +37,6 @@ export default {
 }
 
 .cvs {
-  width: 500px;
-  height: 500px;
   background-color: white;
   border-radius: 15px;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
