@@ -127,9 +127,10 @@ export default {
 
 .center-menu .center-button-link .center-logo {
   color: $black;
-  /* font-family: "Noto Serif KR", serif; */
   font-family: "Krona One", serif;
   font-size: 20px;
+  user-select: none;
+  -ms-user-select: none;
 }
 
 /*  Header Right  *****************************************************************/
