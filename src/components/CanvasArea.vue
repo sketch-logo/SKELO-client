@@ -4,8 +4,13 @@
       <div class="tool_btn" @click="onClickPointerBtn">
         <font-awesome-icon icon="arrows-alt" class="tool_icon"></font-awesome-icon>
       </div>
+
       <div class="tool_btn" @click="onClickDrawingBtn">
         <font-awesome-icon icon="pen" class="tool_icon"></font-awesome-icon>
+      </div>
+
+      <div class="tool_btn" @click="onClickSaveImgBtn">
+        <font-awesome-icon icon="download" class="tool_icon"></font-awesome-icon>
       </div>
     </div>
     <canvas class="cvs" id="cvs" ref="cvs"></canvas>
@@ -16,10 +21,14 @@
 import { fabric } from "fabric";
 
 import { library as faLibrary } from "@fortawesome/fontawesome-svg-core";
-import { faArrowsAlt, faPen } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowsAlt,
+  faPen,
+  faDownload
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-faLibrary.add(faArrowsAlt, faPen);
+faLibrary.add(faArrowsAlt, faPen, faDownload);
 
 export default {
   data() {
@@ -43,6 +52,21 @@ export default {
     },
     onClickDrawingBtn() {
       this.canvas.isDrawingMode = true;
+    },
+    onClickSaveImgBtn() {
+      if (this.canvas.getActiveObject()) {
+        const image = this.canvas.getActiveObject().toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = image;
+        link.download = "image";
+        link.click();
+      } else {
+        const image = this.canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = image;
+        link.download = "image";
+        link.click();
+      }
     }
   }
 };
