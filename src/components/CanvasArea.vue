@@ -67,6 +67,16 @@ export default {
         link.download = "image";
         link.click();
       }
+    },
+    selectAllObjects() {
+      this.canvas.discardActiveObject();
+
+      const selection = new fabric.ActiveSelection(this.canvas.getObjects(), {
+        canvas: this.canvas
+      });
+
+      this.canvas.setActiveObject(selection);
+      this.canvas.requestRenderAll();
     }
   }
 };

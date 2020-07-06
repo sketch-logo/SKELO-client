@@ -5,7 +5,7 @@ Automatically create a logo with user drawing
 
 ## 📝 To-Do
 
-- [ ] Canvas 🎨
+- [x] Canvas 🎨
 - [ ] Canvas Tools (autodraw✏, pointer👆, delete✂, undo↩, etc.)
-- [ ] Make a vector graphics as an object
-- [ ] Send the vector graphic object to the server when mouse-up🖱
+- [x] Make a drawing as an object
+- [ ] Send the object to the server when mouse-up🖱
