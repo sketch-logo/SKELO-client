@@ -1,5 +1,5 @@
 <template>
-  <div class="cvs-container">
+  <div class="cvs-container" @contextmenu.prevent>
     <div class="cvs_tools">
       <div class="tool_btn" @click="onClickPointerBtn">
         <font-awesome-icon icon="arrows-alt" class="tool_icon"></font-awesome-icon>
@@ -85,6 +85,7 @@ export default {
 <style lang="scss" scoped>
 .cvs-container {
   width: 100%;
+  height: calc(100% - 60px);
   display: flex;
   justify-content: center;
 }
