@@ -14,6 +14,17 @@
       </div>
     </div>
     <canvas class="cvs" id="cvs" ref="cvs"></canvas>
+    <div class="cvs_colors">
+      <div class="color_btn" style="background-color: #2c2c2c;" @click="onClickColorBtn"></div>
+      <div class="color_btn" style="background-color: #ffffff;" @click="onClickColorBtn"></div>
+      <div class="color_btn" style="background-color: #ff3b30;" @click="onClickColorBtn"></div>
+      <div class="color_btn" style="background-color: #ff9500;" @click="onClickColorBtn"></div>
+      <div class="color_btn" style="background-color: #ffcc00;" @click="onClickColorBtn"></div>
+      <div class="color_btn" style="background-color: #4cd963;" @click="onClickColorBtn"></div>
+      <div class="color_btn" style="background-color: #5ac8fa;" @click="onClickColorBtn"></div>
+      <div class="color_btn" style="background-color: #0579ff;" @click="onClickColorBtn"></div>
+      <div class="color_btn" style="background-color: #5856d6;" @click="onClickColorBtn"></div>
+    </div>
   </div>
 </template>
 
@@ -77,6 +88,11 @@ export default {
 
       this.canvas.setActiveObject(selection);
       this.canvas.requestRenderAll();
+    },
+    onClickColorBtn(event) {
+      this.canvas.freeDrawingBrush = new fabric.PencilBrush(this.canvas);
+      const btnColor = event.target.style.backgroundColor;
+      this.canvas.freeDrawingBrush.color = btnColor;
     }
   }
 };
@@ -137,5 +153,27 @@ export default {
   background-color: white;
   border-radius: 15px;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+/*  Canvas Colors  *****************************************************************/
+
+.cvs_colors {
+  display: flex;
+  flex-direction: column;
+}
+
+.cvs_colors .color_btn {
+  width: 45px;
+  height: 45px;
+  border-radius: 25px;
+  margin: 3px;
+  margin-left: 30px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.cvs_colors .color_btn:active {
+  transform: scale(1.15);
 }
 </style>
