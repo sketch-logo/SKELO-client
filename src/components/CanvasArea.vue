@@ -96,14 +96,17 @@ export default {
 
     this.cursor.add(this.mousecursor);
 
-    this.canvas.on("mouse:move", this.changeCursor);
+    this.canvas.on("mouse:move", this.changeCursorDrawing);
+    this.canvas.on("mouse:out", this.changeCursorOut);
   },
   methods: {
     onClickPointerBtn() {
       this.canvas.isDrawingMode = false;
+      this.cursor.remove(this.mousecursor);
     },
     onClickDrawingBtn() {
       this.canvas.isDrawingMode = true;
+      this.cursor.add(this.mousecursor);
     },
     onClickSaveImgBtn() {
       if (this.canvas.getActiveObject()) {
@@ -143,6 +146,8 @@ export default {
 
       this.mousecursor
         .set({
+          top: this.mousecursor.cacheHeight,
+          left: this.mousecursor.cacheWidth,
           radius: this.rangeValue / 2
         })
         .setCoords()
@@ -150,13 +155,20 @@ export default {
 
       this.canvas.renderAll();
     },
-    changeCursor(event) {
+    changeCursorDrawing(event) {
       const mouse = event.pointer;
       this.mousecursor
         .set({
           top: mouse.y,
           left: mouse.x
         })
+        .setCoords()
+        .canvas.renderAll();
+    },
+    changeCursorOut() {
+      console.log(this.mousecursor.cacheHeight);
+      this.mousecursor
+        .set({})
         .setCoords()
         .canvas.renderAll();
     }
