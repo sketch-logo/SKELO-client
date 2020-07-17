@@ -3,6 +3,13 @@
 starts at 2020 Jul 01  
 Automatically create a logo with user drawing
 
+## Wanna run this project?
+
+```
+npm i
+npm run dev
+```
+
 ## 📝 To-Do
 
 - [x] Canvas 🎨
