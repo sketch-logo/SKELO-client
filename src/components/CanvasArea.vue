@@ -1,27 +1,41 @@
 <template>
   <div class="cvs-container" @contextmenu.prevent>
-    <div class="cvs_tools">
-      <div class="tool_btn" @click="onClickPointerBtn">
-        <font-awesome-icon icon="arrows-alt" class="tool_icon"></font-awesome-icon>
-      </div>
-
-      <div class="tool_btn" @click="onClickDrawingBtn">
-        <font-awesome-icon icon="pen" class="tool_icon"></font-awesome-icon>
-      </div>
-
-      <div class="tool_btn" @click="onClickClearBtn">
-        <font-awesome-icon icon="trash-alt" class="tool_icon"></font-awesome-icon>
-      </div>
-
-      <div class="tool_btn" @click="onClickSaveImgBtn">
-        <font-awesome-icon icon="download" class="tool_icon"></font-awesome-icon>
-      </div>
-    </div>
     <div class="cvs-column-container">
+      <div class="cvs_tools">
+        <div class="tool_btn" @click="onClickPointerBtn">
+          <font-awesome-icon icon="arrows-alt" class="tool_icon"></font-awesome-icon>
+        </div>
+
+        <div class="tool_btn" @click="onClickDrawingBtn">
+          <font-awesome-icon icon="pen" class="tool_icon"></font-awesome-icon>
+        </div>
+
+        <div class="tool_btn" @click="onClickClearBtn">
+          <font-awesome-icon icon="trash-alt" class="tool_icon"></font-awesome-icon>
+        </div>
+
+        <div class="tool_btn" @click="onClickSaveImgBtn">
+          <font-awesome-icon icon="download" class="tool_icon"></font-awesome-icon>
+        </div>
+      </div>
+
       <div id="cont">
-        <canvas class="cvs" id="cvs" ref="cvs" @mousemove="changeCursor"></canvas>
+        <canvas class="cvs" id="cvs" ref="cvs"></canvas>
         <canvas id="cursor" width="500" height="500"></canvas>
       </div>
+
+      <div class="cvs_colors">
+        <div class="color_btn" style="background-color: #2c2c2c;" @click="onClickColorBtn"></div>
+        <div class="color_btn" style="background-color: #ffffff;" @click="onClickColorBtn"></div>
+        <div class="color_btn" style="background-color: #ff3b30;" @click="onClickColorBtn"></div>
+        <div class="color_btn" style="background-color: #ff9500;" @click="onClickColorBtn"></div>
+        <div class="color_btn" style="background-color: #ffcc00;" @click="onClickColorBtn"></div>
+        <div class="color_btn" style="background-color: #4cd963;" @click="onClickColorBtn"></div>
+        <div class="color_btn" style="background-color: #5ac8fa;" @click="onClickColorBtn"></div>
+        <div class="color_btn" style="background-color: #0579ff;" @click="onClickColorBtn"></div>
+        <div class="color_btn" style="background-color: #5856d6;" @click="onClickColorBtn"></div>
+      </div>
+
       <input
         type="range"
         class="brush-size"
@@ -31,17 +45,6 @@
         v-model="rangeValue"
         @input="changeBrushSize"
       />
-    </div>
-    <div class="cvs_colors">
-      <div class="color_btn" style="background-color: #2c2c2c;" @click="onClickColorBtn"></div>
-      <div class="color_btn" style="background-color: #ffffff;" @click="onClickColorBtn"></div>
-      <div class="color_btn" style="background-color: #ff3b30;" @click="onClickColorBtn"></div>
-      <div class="color_btn" style="background-color: #ff9500;" @click="onClickColorBtn"></div>
-      <div class="color_btn" style="background-color: #ffcc00;" @click="onClickColorBtn"></div>
-      <div class="color_btn" style="background-color: #4cd963;" @click="onClickColorBtn"></div>
-      <div class="color_btn" style="background-color: #5ac8fa;" @click="onClickColorBtn"></div>
-      <div class="color_btn" style="background-color: #0579ff;" @click="onClickColorBtn"></div>
-      <div class="color_btn" style="background-color: #5856d6;" @click="onClickColorBtn"></div>
     </div>
   </div>
 </template>
@@ -106,6 +109,7 @@ export default {
     },
     onClickDrawingBtn() {
       this.canvas.isDrawingMode = true;
+      this.cursor.remove(this.mousecursor);
       this.cursor.add(this.mousecursor);
     },
     onClickSaveImgBtn() {
@@ -137,12 +141,24 @@ export default {
       this.canvas.requestRenderAll();
     },
     onClickColorBtn(event) {
+      this.onClickDrawingBtn();
+      this.mousecursor
+        .set({
+          top: this.mousecursor.cacheHeight,
+          left: this.mousecursor.cacheWidth,
+          radius: this.rangeValue / 2
+        })
+        .setCoords()
+        .canvas.renderAll();
+
       const btnColor = event.target.style.backgroundColor;
       this.canvas.freeDrawingBrush.color = btnColor;
     },
     changeBrushSize(event) {
       this.rangeValue = parseInt(event.target.value);
       this.canvas.freeDrawingBrush.width = this.rangeValue;
+
+      this.onClickDrawingBtn();
 
       this.mousecursor
         .set({
@@ -157,20 +173,23 @@ export default {
     },
     changeCursorDrawing(event) {
       const mouse = event.pointer;
-      this.mousecursor
-        .set({
-          top: mouse.y,
-          left: mouse.x
-        })
-        .setCoords()
-        .canvas.renderAll();
+      if (this.canvas.isDrawingMode) {
+        this.mousecursor
+          .set({
+            top: mouse.y,
+            left: mouse.x
+          })
+          .setCoords()
+          .canvas.renderAll();
+      }
     },
     changeCursorOut() {
-      console.log(this.mousecursor.cacheHeight);
-      this.mousecursor
-        .set({})
-        .setCoords()
-        .canvas.renderAll();
+      if (this.canvas.isDrawingMode) {
+        this.mousecursor
+          .set({})
+          .setCoords()
+          .canvas.renderAll();
+      }
     }
   }
 };
@@ -188,6 +207,9 @@ export default {
   margin: 0;
   display: flex;
   flex-direction: column;
+  position: relative;
+  width: 500px;
+  height: 500px;
 }
 
 /*  Canvas Tools  *****************************************************************/
@@ -195,6 +217,8 @@ export default {
 .cvs_tools {
   display: flex;
   flex-direction: column;
+  position: absolute;
+  left: -20%;
 }
 .cvs_tools .tool_btn {
   width: 60px;
@@ -240,9 +264,11 @@ export default {
 }
 
 #cont {
-  position: relative;
+  position: absolute;
   width: 500px;
   height: 500px;
+  left: 50%;
+  transform: translate(-50%);
 }
 
 #cont canvas,
@@ -263,6 +289,8 @@ export default {
 .cvs_colors {
   display: flex;
   flex-direction: column;
+  position: absolute;
+  right: -20%;
 }
 
 .cvs_colors .color_btn {
@@ -271,6 +299,7 @@ export default {
   border-radius: 25px;
   margin: 3px;
   margin-left: 30px;
+  margin-right: 30px;
   margin-bottom: 10px;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -283,6 +312,10 @@ export default {
 /*  Canvas Brush size  *****************************************************************/
 
 .brush-size {
-  margin: 20px;
+  position: absolute;
+  bottom: -10%;
+  left: 50%;
+  transform: translate(-50%);
+  width: 300px;
 }
 </style>
