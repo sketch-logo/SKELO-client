@@ -13,7 +13,18 @@
         <font-awesome-icon icon="download" class="tool_icon"></font-awesome-icon>
       </div>
     </div>
-    <canvas class="cvs" id="cvs" ref="cvs"></canvas>
+    <div class="cvs-column-container">
+      <canvas class="cvs" id="cvs" ref="cvs"></canvas>
+      <input
+        type="range"
+        class="brush-size"
+        min="1"
+        max="150"
+        step="1"
+        v-model="rangeValue"
+        @change="changeBrushSize"
+      />
+    </div>
     <div class="cvs_colors">
       <div class="color_btn" style="background-color: #2c2c2c;" @click="onClickColorBtn"></div>
       <div class="color_btn" style="background-color: #ffffff;" @click="onClickColorBtn"></div>
@@ -44,7 +55,8 @@ faLibrary.add(faArrowsAlt, faPen, faDownload);
 export default {
   data() {
     return {
-      canvas: ""
+      canvas: "",
+      rangeValue: 10
     };
   },
   components: {
@@ -53,6 +65,9 @@ export default {
   mounted() {
     const ref = this.$refs.cvs;
     this.canvas = new fabric.Canvas(ref, { isDrawingMode: true });
+    this.canvas.freeDrawingBrush = new fabric.PencilBrush(this.canvas);
+
+    this.canvas.freeDrawingBrush.width = this.rangeValue;
 
     this.canvas.setHeight(500);
     this.canvas.setWidth(500);
@@ -90,9 +105,13 @@ export default {
       this.canvas.requestRenderAll();
     },
     onClickColorBtn(event) {
-      this.canvas.freeDrawingBrush = new fabric.PencilBrush(this.canvas);
       const btnColor = event.target.style.backgroundColor;
       this.canvas.freeDrawingBrush.color = btnColor;
+    },
+    changeBrushSize(event) {
+      this.rangeValue = parseInt(event.target.value);
+      this.canvas.freeDrawingBrush.width = this.rangeValue;
+      this.canvas.renderAll();
     }
   }
 };
@@ -104,6 +123,12 @@ export default {
   height: calc(100% - 60px);
   display: flex;
   justify-content: center;
+}
+
+.cvs-column-container {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 /*  Canvas Tools  *****************************************************************/
@@ -175,5 +200,11 @@ export default {
 
 .cvs_colors .color_btn:active {
   transform: scale(1.15);
+}
+
+/*  Canvas Brush size  *****************************************************************/
+
+.brush-size {
+  margin: 20px;
 }
 </style>
