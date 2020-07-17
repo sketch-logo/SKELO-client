@@ -9,6 +9,10 @@
         <font-awesome-icon icon="pen" class="tool_icon"></font-awesome-icon>
       </div>
 
+      <div class="tool_btn" @click="onClickClearBtn">
+        <font-awesome-icon icon="trash-alt" class="tool_icon"></font-awesome-icon>
+      </div>
+
       <div class="tool_btn" @click="onClickSaveImgBtn">
         <font-awesome-icon icon="download" class="tool_icon"></font-awesome-icon>
       </div>
@@ -49,11 +53,12 @@ import { library as faLibrary } from "@fortawesome/fontawesome-svg-core";
 import {
   faArrowsAlt,
   faPen,
-  faDownload
+  faDownload,
+  faTrashAlt
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-faLibrary.add(faArrowsAlt, faPen, faDownload);
+faLibrary.add(faArrowsAlt, faPen, faDownload, faTrashAlt);
 
 export default {
   data() {
@@ -114,6 +119,9 @@ export default {
         link.download = "image";
         link.click();
       }
+    },
+    onClickClearBtn() {
+      this.canvas.clear();
     },
     selectAllObjects() {
       this.canvas.discardActiveObject();
