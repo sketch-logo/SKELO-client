@@ -14,7 +14,10 @@
       </div>
     </div>
     <div class="cvs-column-container">
-      <canvas class="cvs" id="cvs" ref="cvs"></canvas>
+      <div id="cont">
+        <canvas class="cvs" id="cvs" ref="cvs" @mousemove="changeCursor"></canvas>
+        <canvas id="cursor" width="500" height="500"></canvas>
+      </div>
       <input
         type="range"
         class="brush-size"
@@ -22,7 +25,7 @@
         max="150"
         step="1"
         v-model="rangeValue"
-        @change="changeBrushSize"
+        @input="changeBrushSize"
       />
     </div>
     <div class="cvs_colors">
@@ -56,6 +59,8 @@ export default {
   data() {
     return {
       canvas: "",
+      cursor: "",
+      mousecursor: "",
       rangeValue: 10
     };
   },
@@ -71,6 +76,22 @@ export default {
 
     this.canvas.setHeight(500);
     this.canvas.setWidth(500);
+    this.canvas.freeDrawingCursor = "none";
+
+    this.cursor = new fabric.StaticCanvas("cursor");
+    this.mousecursor = new fabric.Circle({
+      left: -100,
+      top: -100,
+      radius: this.rangeValue / 2,
+      fill: "rgba(255,0,0,0)",
+      stroke: "black",
+      originX: "center",
+      originY: "center"
+    });
+
+    this.cursor.add(this.mousecursor);
+
+    this.canvas.on("mouse:move", this.changeCursor);
   },
   methods: {
     onClickPointerBtn() {
@@ -111,7 +132,25 @@ export default {
     changeBrushSize(event) {
       this.rangeValue = parseInt(event.target.value);
       this.canvas.freeDrawingBrush.width = this.rangeValue;
+
+      this.mousecursor
+        .set({
+          radius: this.rangeValue / 2
+        })
+        .setCoords()
+        .canvas.renderAll();
+
       this.canvas.renderAll();
+    },
+    changeCursor(event) {
+      const mouse = event.pointer;
+      this.mousecursor
+        .set({
+          top: mouse.y,
+          left: mouse.x
+        })
+        .setCoords()
+        .canvas.renderAll();
     }
   }
 };
@@ -178,6 +217,25 @@ export default {
   background-color: white;
   border-radius: 15px;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+#cont {
+  position: relative;
+  width: 500px;
+  height: 500px;
+}
+
+#cont canvas,
+.canvas-container {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#cursor {
+  pointer-events: none !important;
 }
 
 /*  Canvas Colors  *****************************************************************/
