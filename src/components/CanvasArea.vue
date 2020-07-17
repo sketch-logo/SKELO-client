@@ -101,6 +101,9 @@ export default {
 
     this.canvas.on("mouse:move", this.changeCursorDrawing);
     this.canvas.on("mouse:out", this.changeCursorOut);
+
+    this.canvas.on("mouse:up", this.endDrawing);
+    this.canvas.on("before:selection:cleared", this.clearSelection);
   },
   methods: {
     onClickPointerBtn() {
@@ -130,6 +133,15 @@ export default {
     onClickClearBtn() {
       this.canvas.clear();
     },
+    clearSelection() {
+      this.ungroupSelectedObjects();
+    },
+    endDrawing() {
+      if (this.canvas.isDrawingMode) {
+        this.selectAllObjects();
+        this.groupSelectedObjects();
+      }
+    },
     selectAllObjects() {
       this.canvas.discardActiveObject();
 
@@ -138,6 +150,30 @@ export default {
       });
 
       this.canvas.setActiveObject(selection);
+      this.canvas.requestRenderAll();
+    },
+    groupSelectedObjects() {
+      if (!this.canvas.getActiveObject()) {
+        return;
+      }
+      if (this.canvas.getActiveObject().type !== "activeSelection") {
+        return;
+      }
+      this.canvas.getActiveObject().toGroup();
+      this.canvas.requestRenderAll();
+    },
+    ungroupSelectedObjects() {
+      if (!this.canvas.getActiveObject()) {
+        return;
+      }
+      if (this.canvas.getActiveObject().type !== "group") {
+        return;
+      }
+      this.canvas.getActiveObject().toActiveSelection();
+      this.canvas.requestRenderAll();
+    },
+    discardSelection() {
+      this.canvas.discardActiveObject();
       this.canvas.requestRenderAll();
     },
     onClickColorBtn(event) {
