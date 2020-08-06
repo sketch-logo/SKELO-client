@@ -24,7 +24,7 @@ npm run dev
 - [x] Change brush size 🖌️
 - [x] Selct objects as one when mouse up🖱
 - [x] Delete whole canvas objects
-- [ ] Delete only selected objects
+- [x] Delete only selected objects
 - [x] Save whole canvas as png image
 - [x] Save only selected objects as png image
 - [ ] Send the object to the server when mouse-up🖱

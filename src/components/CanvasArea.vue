@@ -155,7 +155,11 @@ export default {
       }
     },
     onClickClearBtn() {
-      this.canvas.clear();
+      if (this.canvas.getActiveObject()) {
+        this.canvas.remove(this.canvas.getActiveObject());
+      } else {
+        this.canvas.clear();
+      }
     },
     clearSelection() {
       this.ungroupSelectedObjects();
