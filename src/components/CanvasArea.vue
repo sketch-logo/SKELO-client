@@ -21,7 +21,7 @@
 
       <div id="cont">
         <canvas class="cvs" id="cvs" ref="cvs"></canvas>
-        <canvas id="cursor" width="500" height="500"></canvas>
+        <canvas id="cursor" width="600" height="600"></canvas>
       </div>
 
       <div class="cvs_colors">
@@ -82,8 +82,8 @@ export default {
 
     this.canvas.freeDrawingBrush.width = this.rangeValue;
 
-    this.canvas.setHeight(500);
-    this.canvas.setWidth(500);
+    this.canvas.setHeight(600);
+    this.canvas.setWidth(600);
     this.canvas.freeDrawingCursor = "none";
 
     this.cursor = new fabric.StaticCanvas("cursor");
@@ -269,8 +269,8 @@ export default {
   display: flex;
   flex-direction: column;
   position: relative;
-  width: 500px;
-  height: 500px;
+  width: 600px;
+  height: 600px;
 }
 
 /*  Canvas Tools  *****************************************************************/
@@ -279,7 +279,7 @@ export default {
   display: flex;
   flex-direction: column;
   position: absolute;
-  left: -20%;
+  left: -30%;
 }
 .cvs_tools .tool_btn {
   width: 60px;
@@ -326,8 +326,8 @@ export default {
 
 #cont {
   position: absolute;
-  width: 500px;
-  height: 500px;
+  width: 600px;
+  height: 600px;
   left: 50%;
   transform: translate(-50%);
 }
@@ -349,19 +349,16 @@ export default {
 
 .cvs_colors {
   display: flex;
-  flex-direction: column;
+  width: 600px;
   position: absolute;
-  right: -20%;
+  bottom: -12%;
+  justify-content: space-around;
 }
 
 .cvs_colors .color_btn {
   width: 45px;
   height: 45px;
   border-radius: 25px;
-  margin: 3px;
-  margin-left: 30px;
-  margin-right: 30px;
-  margin-bottom: 10px;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
@@ -374,9 +371,10 @@ export default {
 
 .brush-size {
   position: absolute;
-  bottom: -10%;
-  left: 50%;
+  top: 50%;
+  left: -33%;
   transform: translate(-50%);
   width: 300px;
+  transform: rotate(270deg);
 }
 </style>

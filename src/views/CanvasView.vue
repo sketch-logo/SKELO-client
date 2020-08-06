@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <header-bar></header-bar>
+    <image-list></image-list>
     <canvas-area></canvas-area>
   </div>
 </template>
@@ -8,12 +9,14 @@
 <script>
 import HeaderBar from "../components/HeaderBar";
 import CanvasArea from "../components/CanvasArea";
+import ImageList from "../components/ImageList";
 
 export default {
   components: {
     HeaderBar,
-    CanvasArea
-  }
+    CanvasArea,
+    ImageList,
+  },
 };
 </script>
 
