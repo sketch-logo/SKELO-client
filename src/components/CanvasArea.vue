@@ -1,5 +1,5 @@
 <template>
-  <div class="cvs-container" @contextmenu.prevent>
+  <div class="cvs-container" @contextmenu.prevent="switchMode">
     <div class="cvs-column-container">
       <div class="cvs_tools">
         <div class="tool_btn" @click="onClickPointerBtn">
@@ -57,7 +57,7 @@ import {
   faArrowsAlt,
   faPen,
   faDownload,
-  faTrashAlt
+  faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -69,11 +69,11 @@ export default {
       canvas: "",
       cursor: "",
       mousecursor: "",
-      rangeValue: 10
+      rangeValue: 10,
     };
   },
   components: {
-    FontAwesomeIcon
+    FontAwesomeIcon,
   },
   mounted() {
     const ref = this.$refs.cvs;
@@ -94,7 +94,7 @@ export default {
       fill: "rgba(255,0,0,0)",
       stroke: "black",
       originX: "center",
-      originY: "center"
+      originY: "center",
     });
 
     this.cursor.add(this.mousecursor);
@@ -104,8 +104,32 @@ export default {
 
     this.canvas.on("mouse:up", this.endDrawing);
     this.canvas.on("before:selection:cleared", this.clearSelection);
+
+    const self = this;
+    window.addEventListener("keyup", function (event) {
+      if (event.key == "Delete" || event.key == "Backspace") {
+        self.onClickClearBtn();
+      }
+
+      if (
+        event.ctrlKey == true &&
+        (event.keyCode == 65 || event.keyCode == 97)
+      ) {
+        self.selectAllObjects();
+      }
+    });
   },
   methods: {
+    switchMode() {
+      if (this.canvas.isDrawingMode) {
+        this.canvas.isDrawingMode = false;
+        this.cursor.remove(this.mousecursor);
+      } else {
+        this.canvas.isDrawingMode = true;
+        this.cursor.remove(this.mousecursor);
+        this.cursor.add(this.mousecursor);
+      }
+    },
     onClickPointerBtn() {
       this.canvas.isDrawingMode = false;
       this.cursor.remove(this.mousecursor);
@@ -146,7 +170,7 @@ export default {
       this.canvas.discardActiveObject();
 
       const selection = new fabric.ActiveSelection(this.canvas.getObjects(), {
-        canvas: this.canvas
+        canvas: this.canvas,
       });
 
       this.canvas.setActiveObject(selection);
@@ -182,7 +206,7 @@ export default {
         .set({
           top: this.mousecursor.cacheHeight,
           left: this.mousecursor.cacheWidth,
-          radius: this.rangeValue / 2
+          radius: this.rangeValue / 2,
         })
         .setCoords()
         .canvas.renderAll();
@@ -200,7 +224,7 @@ export default {
         .set({
           top: this.mousecursor.cacheHeight,
           left: this.mousecursor.cacheWidth,
-          radius: this.rangeValue / 2
+          radius: this.rangeValue / 2,
         })
         .setCoords()
         .canvas.renderAll();
@@ -213,7 +237,7 @@ export default {
         this.mousecursor
           .set({
             top: mouse.y,
-            left: mouse.x
+            left: mouse.x,
           })
           .setCoords()
           .canvas.renderAll();
@@ -221,13 +245,10 @@ export default {
     },
     changeCursorOut() {
       if (this.canvas.isDrawingMode) {
-        this.mousecursor
-          .set({})
-          .setCoords()
-          .canvas.renderAll();
+        this.mousecursor.set({}).setCoords().canvas.renderAll();
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

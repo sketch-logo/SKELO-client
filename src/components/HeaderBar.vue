@@ -34,8 +34,8 @@ faLibrary.add(faBars, faUserCircle);
 
 export default {
   components: {
-    FontAwesomeIcon
-  }
+    FontAwesomeIcon,
+  },
 };
 </script>
 
