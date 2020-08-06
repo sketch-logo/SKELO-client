@@ -7,18 +7,42 @@
       </div>
       <div class="menu-content" v-if="menuClosed==''">
         <ul class="contents-list">
-          <li class="content"></li>
-          <li class="content"></li>
-          <li class="content"></li>
-          <li class="content"></li>
-          <li class="content"></li>
-          <li class="content"></li>
-          <li class="content"></li>
-          <li class="content"></li>
-          <li class="content"></li>
-          <li class="content"></li>
-          <li class="content"></li>
-          <li class="content"></li>
+          <li class="content" @click="onClickImg">
+            <img src="https://image.flaticon.com/icons/svg/607/607757.svg" class="content-img" />
+          </li>
+          <li class="content" @click="onClickImg">
+            <img src="https://image.flaticon.com/icons/svg/149/149098.svg" class="content-img" />
+          </li>
+          <li class="content" @click="onClickImg">
+            <img src="https://image.flaticon.com/icons/svg/607/607757.svg" class="content-img" />
+          </li>
+          <li class="content" @click="onClickImg">
+            <img src="https://image.flaticon.com/icons/svg/607/607757.svg" class="content-img" />
+          </li>
+          <li class="content" @click="onClickImg">
+            <img src="https://image.flaticon.com/icons/svg/607/607757.svg" class="content-img" />
+          </li>
+          <li class="content" @click="onClickImg">
+            <img src="https://image.flaticon.com/icons/svg/607/607757.svg" class="content-img" />
+          </li>
+          <li class="content" @click="onClickImg">
+            <img src="https://image.flaticon.com/icons/svg/607/607757.svg" class="content-img" />
+          </li>
+          <li class="content" @click="onClickImg">
+            <img src="https://image.flaticon.com/icons/svg/607/607757.svg" class="content-img" />
+          </li>
+          <li class="content" @click="onClickImg">
+            <img src="https://image.flaticon.com/icons/svg/607/607757.svg" class="content-img" />
+          </li>
+          <li class="content" @click="onClickImg">
+            <img src="https://image.flaticon.com/icons/svg/607/607757.svg" class="content-img" />
+          </li>
+          <li class="content" @click="onClickImg">
+            <img src="https://image.flaticon.com/icons/svg/607/607757.svg" class="content-img" />
+          </li>
+          <li class="content" @click="onClickImg">
+            <img src="https://image.flaticon.com/icons/svg/607/607757.svg" class="content-img" />
+          </li>
         </ul>
       </div>
     </div>
@@ -48,6 +72,9 @@ export default {
       } else {
         this.menuClosed = "active";
       }
+    },
+    onClickImg() {
+      console.log("test");
     },
   },
 };
@@ -112,6 +139,10 @@ export default {
           background-color: $white;
           border-radius: 15px;
           cursor: pointer;
+
+          .content-img {
+            margin: 20px;
+          }
         }
       }
     }

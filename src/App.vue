@@ -4,9 +4,11 @@
 
 <script>
 import router from "./routes/routes.js";
+import store from "./stores/store";
 
 export default {
   router,
+  store,
 };
 </script>
 

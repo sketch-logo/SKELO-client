@@ -1,40 +1,14 @@
 <template>
   <div class="cvs-container" @contextmenu.prevent="switchMode">
     <div class="cvs-column-container">
-      <div class="cvs_tools">
-        <div class="tool_btn" @click="onClickPointerBtn">
-          <font-awesome-icon icon="arrows-alt" class="tool_icon"></font-awesome-icon>
-        </div>
-
-        <div class="tool_btn" @click="onClickDrawingBtn">
-          <font-awesome-icon icon="pen" class="tool_icon"></font-awesome-icon>
-        </div>
-
-        <div class="tool_btn" @click="onClickClearBtn">
-          <font-awesome-icon icon="trash-alt" class="tool_icon"></font-awesome-icon>
-        </div>
-
-        <div class="tool_btn" @click="onClickSaveImgBtn">
-          <font-awesome-icon icon="download" class="tool_icon"></font-awesome-icon>
-        </div>
-      </div>
+      <canvas-tools></canvas-tools>
 
       <div id="cont">
         <canvas class="cvs" id="cvs" ref="cvs"></canvas>
         <canvas id="cursor" width="600" height="600"></canvas>
       </div>
 
-      <div class="cvs_colors">
-        <div class="color_btn" style="background-color: #2c2c2c;" @click="onClickColorBtn"></div>
-        <div class="color_btn" style="background-color: #ffffff;" @click="onClickColorBtn"></div>
-        <div class="color_btn" style="background-color: #ff3b30;" @click="onClickColorBtn"></div>
-        <div class="color_btn" style="background-color: #ff9500;" @click="onClickColorBtn"></div>
-        <div class="color_btn" style="background-color: #ffcc00;" @click="onClickColorBtn"></div>
-        <div class="color_btn" style="background-color: #4cd963;" @click="onClickColorBtn"></div>
-        <div class="color_btn" style="background-color: #5ac8fa;" @click="onClickColorBtn"></div>
-        <div class="color_btn" style="background-color: #0579ff;" @click="onClickColorBtn"></div>
-        <div class="color_btn" style="background-color: #5856d6;" @click="onClickColorBtn"></div>
-      </div>
+      <canvas-color></canvas-color>
 
       <input
         type="range"
@@ -52,16 +26,8 @@
 <script>
 import { fabric } from "fabric";
 
-import { library as faLibrary } from "@fortawesome/fontawesome-svg-core";
-import {
-  faArrowsAlt,
-  faPen,
-  faDownload,
-  faTrashAlt,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-
-faLibrary.add(faArrowsAlt, faPen, faDownload, faTrashAlt);
+import CanvasColor from "./CanvasColor";
+import CanvasTools from "./CanvasTools";
 
 export default {
   data() {
@@ -73,21 +39,24 @@ export default {
     };
   },
   components: {
-    FontAwesomeIcon,
+    CanvasColor,
+    CanvasTools,
   },
   mounted() {
     const ref = this.$refs.cvs;
-    this.canvas = new fabric.Canvas(ref, { isDrawingMode: true });
-    this.canvas.freeDrawingBrush = new fabric.PencilBrush(this.canvas);
+    this.$store.state.canvas = new fabric.Canvas(ref, { isDrawingMode: true });
+    this.$store.state.canvas.freeDrawingBrush = new fabric.PencilBrush(
+      this.$store.state.canvas
+    );
 
-    this.canvas.freeDrawingBrush.width = this.rangeValue;
+    this.$store.state.canvas.freeDrawingBrush.width = this.rangeValue;
 
-    this.canvas.setHeight(600);
-    this.canvas.setWidth(600);
-    this.canvas.freeDrawingCursor = "none";
+    this.$store.state.canvas.setHeight(600);
+    this.$store.state.canvas.setWidth(600);
+    this.$store.state.canvas.freeDrawingCursor = "none";
 
-    this.cursor = new fabric.StaticCanvas("cursor");
-    this.mousecursor = new fabric.Circle({
+    this.$store.state.cursor = new fabric.StaticCanvas("cursor");
+    this.$store.state.mousecursor = new fabric.Circle({
       left: -100,
       top: -100,
       radius: this.rangeValue / 2,
@@ -97,148 +66,68 @@ export default {
       originY: "center",
     });
 
-    this.cursor.add(this.mousecursor);
+    this.$store.state.cursor.add(this.$store.state.mousecursor);
 
-    this.canvas.on("mouse:move", this.changeCursorDrawing);
-    this.canvas.on("mouse:out", this.changeCursorOut);
+    this.$store.state.canvas.on("mouse:move", this.changeCursorDrawing);
+    this.$store.state.canvas.on("mouse:out", this.changeCursorOut);
 
-    this.canvas.on("mouse:up", this.endDrawing);
-    this.canvas.on("before:selection:cleared", this.clearSelection);
+    this.$store.state.canvas.on("mouse:up", this.endDrawing);
+    this.$store.state.canvas.on(
+      "before:selection:cleared",
+      this.clearSelection
+    );
 
     const self = this;
     window.addEventListener("keyup", function (event) {
       if (event.key == "Delete" || event.key == "Backspace") {
-        self.onClickClearBtn();
+        self.$store.commit("REMOVE_SELECTED_OBJECTS");
       }
 
       if (
         event.ctrlKey == true &&
         (event.keyCode == 65 || event.keyCode == 97)
       ) {
-        self.selectAllObjects();
+        self.$store.commit("SELECT_ALL_OBJECTS");
       }
     });
   },
   methods: {
     switchMode() {
-      if (this.canvas.isDrawingMode) {
-        this.canvas.isDrawingMode = false;
-        this.cursor.remove(this.mousecursor);
-      } else {
-        this.canvas.isDrawingMode = true;
-        this.cursor.remove(this.mousecursor);
-        this.cursor.add(this.mousecursor);
-      }
-    },
-    onClickPointerBtn() {
-      this.canvas.isDrawingMode = false;
-      this.cursor.remove(this.mousecursor);
+      this.$store.commit("SWITCH_MODE");
     },
     onClickDrawingBtn() {
-      this.canvas.isDrawingMode = true;
-      this.cursor.remove(this.mousecursor);
-      this.cursor.add(this.mousecursor);
-    },
-    onClickSaveImgBtn() {
-      if (this.canvas.getActiveObject()) {
-        const image = this.canvas.getActiveObject().toDataURL("image/png");
-        const link = document.createElement("a");
-        link.href = image;
-        link.download = "image";
-        link.click();
-      } else {
-        const image = this.canvas.toDataURL("image/png");
-        const link = document.createElement("a");
-        link.href = image;
-        link.download = "image";
-        link.click();
-      }
-    },
-    onClickClearBtn() {
-      if (this.canvas.getActiveObject()) {
-        this.canvas.remove(this.canvas.getActiveObject());
-      } else {
-        this.canvas.clear();
-      }
+      this.$store.commit("CLICK_DRAWING_BTN");
     },
     clearSelection() {
-      this.ungroupSelectedObjects();
+      this.$store.commit("UNGROUP_SELECTED_OBJECTS");
     },
     endDrawing() {
-      if (this.canvas.isDrawingMode) {
-        this.selectAllObjects();
-        this.groupSelectedObjects();
+      if (this.$store.state.canvas.isDrawingMode) {
+        this.$store.commit("SELECT_ALL_OBJECTS");
+        this.$store.commit("GROUP_SELECTED_OBJECTS");
       }
-    },
-    selectAllObjects() {
-      this.canvas.discardActiveObject();
-
-      const selection = new fabric.ActiveSelection(this.canvas.getObjects(), {
-        canvas: this.canvas,
-      });
-
-      this.canvas.setActiveObject(selection);
-      this.canvas.requestRenderAll();
-    },
-    groupSelectedObjects() {
-      if (!this.canvas.getActiveObject()) {
-        return;
-      }
-      if (this.canvas.getActiveObject().type !== "activeSelection") {
-        return;
-      }
-      this.canvas.getActiveObject().toGroup();
-      this.canvas.requestRenderAll();
-    },
-    ungroupSelectedObjects() {
-      if (!this.canvas.getActiveObject()) {
-        return;
-      }
-      if (this.canvas.getActiveObject().type !== "group") {
-        return;
-      }
-      this.canvas.getActiveObject().toActiveSelection();
-      this.canvas.requestRenderAll();
-    },
-    discardSelection() {
-      this.canvas.discardActiveObject();
-      this.canvas.requestRenderAll();
-    },
-    onClickColorBtn(event) {
-      this.onClickDrawingBtn();
-      this.mousecursor
-        .set({
-          top: this.mousecursor.cacheHeight,
-          left: this.mousecursor.cacheWidth,
-          radius: this.rangeValue / 2,
-        })
-        .setCoords()
-        .canvas.renderAll();
-
-      const btnColor = event.target.style.backgroundColor;
-      this.canvas.freeDrawingBrush.color = btnColor;
     },
     changeBrushSize(event) {
       this.rangeValue = parseInt(event.target.value);
-      this.canvas.freeDrawingBrush.width = this.rangeValue;
+      this.$store.state.canvas.freeDrawingBrush.width = this.rangeValue;
 
       this.onClickDrawingBtn();
 
-      this.mousecursor
+      this.$store.state.mousecursor
         .set({
-          top: this.mousecursor.cacheHeight,
-          left: this.mousecursor.cacheWidth,
+          top: this.$store.state.mousecursor.cacheHeight,
+          left: this.$store.state.mousecursor.cacheWidth,
           radius: this.rangeValue / 2,
         })
         .setCoords()
         .canvas.renderAll();
 
-      this.canvas.renderAll();
+      this.$store.state.canvas.renderAll();
     },
     changeCursorDrawing(event) {
       const mouse = event.pointer;
-      if (this.canvas.isDrawingMode) {
-        this.mousecursor
+      if (this.$store.state.canvas.isDrawingMode) {
+        this.$store.state.mousecursor
           .set({
             top: mouse.y,
             left: mouse.x,
@@ -248,8 +137,8 @@ export default {
       }
     },
     changeCursorOut() {
-      if (this.canvas.isDrawingMode) {
-        this.mousecursor.set({}).setCoords().canvas.renderAll();
+      if (this.$store.state.canvas.isDrawingMode) {
+        this.$store.state.mousecursor.set({}).setCoords().canvas.renderAll();
       }
     },
   },
@@ -271,49 +160,6 @@ export default {
   position: relative;
   width: 600px;
   height: 600px;
-}
-
-/*  Canvas Tools  *****************************************************************/
-
-.cvs_tools {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  left: -30%;
-}
-.cvs_tools .tool_btn {
-  width: 60px;
-  height: 60px;
-  position: relative;
-  display: flex;
-  margin: 20px;
-  border-radius: 100%;
-  cursor: pointer;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  align-content: center;
-  background: $white;
-  transition: all 0.1s ease-in-out;
-  box-shadow: -6px -6px 10px rgba(255, 255, 255, 0.8),
-    6px 6px 10px rgba(0, 0, 0, 0.2);
-
-  &:hover {
-    opacity: 0.3;
-    box-shadow: -6px -6px 10px rgba(255, 255, 255, 0.8),
-      6px 6px 10px rgba(0, 0, 0, 0.2);
-  }
-
-  &:active {
-    opacity: 1;
-    box-shadow: inset -4px -4px 8px rgba(255, 255, 255, 0.5),
-      inset 8px 8px 16px rgba(0, 0, 0, 0.1);
-  }
-}
-
-.cvs_tools .tool_icon {
-  width: 30px;
-  height: 30px;
 }
 
 /*  Canvas  *****************************************************************/
@@ -343,28 +189,6 @@ export default {
 
 #cursor {
   pointer-events: none !important;
-}
-
-/*  Canvas Colors  *****************************************************************/
-
-.cvs_colors {
-  display: flex;
-  width: 600px;
-  position: absolute;
-  bottom: -12%;
-  justify-content: space-around;
-}
-
-.cvs_colors .color_btn {
-  width: 45px;
-  height: 45px;
-  border-radius: 25px;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
-.cvs_colors .color_btn:active {
-  transform: scale(1.15);
 }
 
 /*  Canvas Brush size  *****************************************************************/
