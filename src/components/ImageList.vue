@@ -74,7 +74,49 @@ export default {
       }
     },
     onClickImg() {
-      console.log("test");
+      this.$store.commit("UNGROUP_SELECTED_OBJECTS");
+      this.$store.commit("REMOVE_SELECTION");
+
+      const imgLeft = this.$store.state.selection.left;
+      const imgTop = this.$store.state.selection.top;
+      const imgWidth = this.$store.state.selection.width;
+      const imgHeight = this.$store.state.selection.height;
+      const canvas = this.$store.state.canvas;
+
+      /** png **/
+      fabric.Image.fromURL(
+        "https://image.flaticon.com/icons/png/128/607/607757.png",
+        function (myImg) {
+          var img1 = myImg.set({
+            top: imgTop,
+            left: imgLeft,
+            width: imgWidth,
+            height: imgHeight,
+          });
+          canvas.add(img1);
+        }
+      );
+
+      /** svg **/
+      // var group = [];
+      // fabric.loadSVGFromURL(
+      //   "https://image.flaticon.com/icons/svg/607/607757.svg",
+      //   function (objects, options) {
+      //     var loadedObjects = new fabric.Group(group);
+      //     loadedObjects.set({
+      //       left: imgLeft,
+      //       top: imgTop,
+      //       width: imgWidth,
+      //       height: imgHeight,
+      //     });
+      //     canvas.add(loadedObjects);
+      //     canvas.renderAll();
+      //   },
+      //   function (item, object) {
+      //     object.set("id", item.getAttribute("id"));
+      //     group.push(object);
+      //   }
+      // );
     },
   },
 };

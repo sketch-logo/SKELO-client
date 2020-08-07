@@ -60,6 +60,7 @@ export default {
     },
     onClickClearBtn() {
       this.$store.commit("REMOVE_SELECTED_OBJECTS");
+      this.$store.commit("DISCARD_SELECTION");
     },
   },
 };

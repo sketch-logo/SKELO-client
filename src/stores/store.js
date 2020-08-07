@@ -7,7 +7,13 @@ export default new Vuex.Store({
   state: {
     canvas: "",
     cursor: "",
-    mousecursor: ""
+    mousecursor: "",
+    selection: {
+      width: 0,
+      height: 0,
+      top: 0,
+      left: 0
+    }
   },
   getters: {},
   mutations: {
@@ -29,9 +35,9 @@ export default new Vuex.Store({
     REMOVE_SELECTED_OBJECTS(state) {
       if (state.canvas.getActiveObject()) {
         const selection = state.canvas.getActiveObject();
+
         if (selection.type == "activeSelection") {
           selection.forEachObject(function(element) {
-            console.log(element);
             state.canvas.remove(element);
           });
         } else {
@@ -47,6 +53,12 @@ export default new Vuex.Store({
       const selection = new fabric.ActiveSelection(state.canvas.getObjects(), {
         canvas: state.canvas
       });
+
+      console.log("selection :>> ", selection);
+      state.selection.width = selection.width;
+      state.selection.height = selection.height;
+      state.selection.top = selection.top;
+      state.selection.left = selection.left;
 
       state.canvas.setActiveObject(selection);
       state.canvas.requestRenderAll();
@@ -74,6 +86,23 @@ export default new Vuex.Store({
     DISCARD_SELECTION(state) {
       state.canvas.discardActiveObject();
       state.canvas.requestRenderAll();
+    },
+    REMOVE_SELECTION(state) {
+      if (state.canvas.getActiveObject()) {
+        const selection = state.canvas.getActiveObject();
+        state.selection.width = selection.width;
+        state.selection.height = selection.height;
+        state.selection.top = selection.top;
+        state.selection.left = selection.left;
+
+        if (selection.type == "activeSelection") {
+          selection.forEachObject(function(element) {
+            state.canvas.remove(element);
+          });
+        } else {
+          state.canvas.remove(selection);
+        }
+      }
     }
   },
   actions: {}

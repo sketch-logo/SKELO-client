@@ -81,6 +81,7 @@ export default {
     window.addEventListener("keyup", function (event) {
       if (event.key == "Delete" || event.key == "Backspace") {
         self.$store.commit("REMOVE_SELECTED_OBJECTS");
+        self.$store.commit("DISCARD_SELECTION");
       }
 
       if (
