@@ -90,6 +90,7 @@ export default {
     border-radius: 20px 0 0 20px;
     background-color: $gray;
     transition: 300ms width cubic-bezier(0.77, 0, 0.175, 1);
+    user-select: none;
 
     &.active {
       width: 0;

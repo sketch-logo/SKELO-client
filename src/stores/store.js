@@ -28,12 +28,19 @@ export default new Vuex.Store({
     },
     REMOVE_SELECTED_OBJECTS(state) {
       if (state.canvas.getActiveObject()) {
-        state.canvas.remove(state.canvas.getActiveObject());
+        const selection = state.canvas.getActiveObject();
+        if (selection.type == "activeSelection") {
+          selection.forEachObject(function(element) {
+            console.log(element);
+            state.canvas.remove(element);
+          });
+        } else {
+          state.canvas.remove(selection);
+        }
       } else {
         state.canvas.clear();
       }
     },
-
     SELECT_ALL_OBJECTS(state) {
       state.canvas.discardActiveObject();
 

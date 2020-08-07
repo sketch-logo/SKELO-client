@@ -8,7 +8,7 @@
         <canvas id="cursor" width="600" height="600"></canvas>
       </div>
 
-      <canvas-color></canvas-color>
+      <canvas-color @click.native="changeCursorPosition"></canvas-color>
 
       <input
         type="range"
@@ -113,14 +113,7 @@ export default {
 
       this.onClickDrawingBtn();
 
-      this.$store.state.mousecursor
-        .set({
-          top: this.$store.state.mousecursor.cacheHeight,
-          left: this.$store.state.mousecursor.cacheWidth,
-          radius: this.rangeValue / 2,
-        })
-        .setCoords()
-        .canvas.renderAll();
+      this.changeCursorPosition();
 
       this.$store.state.canvas.renderAll();
     },
@@ -140,6 +133,16 @@ export default {
       if (this.$store.state.canvas.isDrawingMode) {
         this.$store.state.mousecursor.set({}).setCoords().canvas.renderAll();
       }
+    },
+    changeCursorPosition() {
+      this.$store.state.mousecursor
+        .set({
+          top: 300,
+          left: 300,
+          radius: this.rangeValue / 2,
+        })
+        .setCoords()
+        .canvas.renderAll();
     },
   },
 };
